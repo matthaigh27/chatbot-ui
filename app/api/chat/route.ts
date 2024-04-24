@@ -3,26 +3,14 @@ import { OpenAIError, OpenAIStream } from '@/utils/server';
 
 import { ChatBody, Message } from '@/types/chat';
 
-// @ts-expect-error
-import wasm from '../../node_modules/@dqbd/tiktoken/lite/tiktoken_bg.wasm?module';
+import { type TiktokenModel, getEncoding, getEncodingNameForModel } from "js-tiktoken";
 
-import tiktokenModel from '@dqbd/tiktoken/encoders/cl100k_base.json';
-import { Tiktoken, init } from '@dqbd/tiktoken/lite/init';
+export const runtime = 'edge';
 
-export const config = {
-  runtime: 'edge',
-};
-
-const handler = async (req: Request): Promise<Response> => {
+export async function POST(req: Request): Promise<Response> {
   try {
     const { model, messages, key, prompt, temperature } = (await req.json()) as ChatBody;
-
-    await init((imports) => WebAssembly.instantiate(wasm, imports));
-    const encoding = new Tiktoken(
-      tiktokenModel.bpe_ranks,
-      tiktokenModel.special_tokens,
-      tiktokenModel.pat_str,
-    );
+    const encoding = getEncoding(getEncodingNameForModel(model.id as TiktokenModel));
 
     let promptToSend = prompt;
     if (!promptToSend) {
@@ -50,8 +38,6 @@ const handler = async (req: Request): Promise<Response> => {
       messagesToSend = [message, ...messagesToSend];
     }
 
-    encoding.free();
-
     const stream = await OpenAIStream(model, promptToSend, temperatureToUse, key, messagesToSend);
 
     return new Response(stream);
@@ -64,5 +50,3 @@ const handler = async (req: Request): Promise<Response> => {
     }
   }
 };
-
-export default handler;

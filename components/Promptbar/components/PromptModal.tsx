@@ -1,6 +1,6 @@
 import { FC, KeyboardEvent, useEffect, useRef, useState } from 'react';
 
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'react-i18next';
 
 import { Prompt } from '@/types/prompt';
 

@@ -15,6 +15,7 @@ module.exports = {
     '^.*/services/.*$', // Services
     '^.*/utils/.*$', // Utils
     '^.*/types/.*$', // Types
+    '^.*/app/.*$', // Components
     '^.*/pages/.*$', // Components
     '^.*/components/.*$', // Components
     '^[./]', // Other imports

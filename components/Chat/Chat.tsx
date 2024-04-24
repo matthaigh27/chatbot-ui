@@ -3,14 +3,14 @@ import {
   MutableRefObject,
   memo,
   useCallback,
-  useContext,
+  use,
   useEffect,
   useRef,
   useState,
 } from 'react';
 import toast from 'react-hot-toast';
 
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'react-i18next';
 
 import { getEndpoint } from '@/utils/app/api';
 import {
@@ -23,16 +23,16 @@ import { throttle } from '@/utils/data/throttle';
 import { ChatBody, Conversation, Message } from '@/types/chat';
 import { Plugin } from '@/types/plugin';
 
-import HomeContext from '@/pages/api/home/home.context';
+import HomeContext from '@/app/api/home/home.context';
 
 import Spinner from '../Spinner';
 import { ChatInput } from './ChatInput';
 import { ChatLoader } from './ChatLoader';
 import { ErrorMessageDiv } from './ErrorMessageDiv';
+import { MemoizedChatMessage } from './MemoizedChatMessage';
 import { ModelSelect } from './ModelSelect';
 import { SystemPrompt } from './SystemPrompt';
 import { TemperatureSlider } from './Temperature';
-import { MemoizedChatMessage } from './MemoizedChatMessage';
 
 interface Props {
   stopConversationRef: MutableRefObject<boolean>;
@@ -56,7 +56,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
     },
     handleUpdateConversation,
     dispatch: homeDispatch,
-  } = useContext(HomeContext);
+  } = use(HomeContext);
 
   const [currentMessage, setCurrentMessage] = useState<Message>();
   const [autoScrollEnabled, setAutoScrollEnabled] = useState<boolean>(true);
@@ -290,7 +290,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
 
   const onClearAll = () => {
     if (
-      confirm(t<string>('Are you sure you want to clear all messages?')) &&
+      confirm(t('Are you sure you want to clear all messages?')) &&
       selectedConversation
     ) {
       handleUpdateConversation(selectedConversation, {

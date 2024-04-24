@@ -9,14 +9,14 @@ import {
   DragEvent,
   KeyboardEvent,
   MouseEventHandler,
-  useContext,
+  use,
   useEffect,
   useState,
 } from 'react';
 
 import { Conversation } from '@/types/chat';
 
-import HomeContext from '@/pages/api/home/home.context';
+import HomeContext from '@/app/api/home/home.context';
 
 import SidebarActionButton from '@/components/Buttons/SidebarActionButton';
 import ChatbarContext from '@/components/Chatbar/Chatbar.context';
@@ -30,9 +30,9 @@ export const ConversationComponent = ({ conversation }: Props) => {
     state: { selectedConversation, messageIsStreaming },
     handleSelectConversation,
     handleUpdateConversation,
-  } = useContext(HomeContext);
+  } = use(HomeContext);
 
-  const { handleDeleteConversation } = useContext(ChatbarContext);
+  const { handleDeleteConversation } = use(ChatbarContext);
 
   const [isDeleting, setIsDeleting] = useState(false);
   const [isRenaming, setIsRenaming] = useState(false);

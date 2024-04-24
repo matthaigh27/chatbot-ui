@@ -1,5 +1,3 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-
 import { OPENAI_API_HOST } from '@/utils/app/const';
 import { cleanSourceText } from '@/utils/server/google';
 
@@ -9,11 +7,15 @@ import { GoogleBody, GoogleSource } from '@/types/google';
 import { Readability } from '@mozilla/readability';
 import endent from 'endent';
 import jsdom, { JSDOM } from 'jsdom';
+import { NextRequest, NextResponse } from 'next/server';
 
-const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
+export const runtime = 'edge';
+
+// TODO: server action
+export async function POST(req: NextRequest) {
   try {
     const { messages, key, model, googleAPIKey, googleCSEId } =
-      req.body as GoogleBody;
+      req.body as unknown as GoogleBody;
 
     const userMessage = messages[messages.length - 1];
     const query = encodeURIComponent(userMessage.content.trim());
@@ -139,11 +141,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
     const { choices: choices2 } = await answerRes.json();
     const answer = choices2[0].message.content;
 
-    res.status(200).json({ answer });
+    return NextResponse.json({ answer });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Error'})
+    return new Response("Error", { status: 500 });
   }
 };
-
-export default handler;

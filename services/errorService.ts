@@ -1,6 +1,6 @@
-import { useMemo } from 'react';
+import { useCallback, useEffect } from 'react';
 
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'react-i18next';
 
 import { ErrorMessage } from '@/types/error';
 
@@ -8,8 +8,8 @@ const useErrorService = () => {
   const { t } = useTranslation('chat');
 
   return {
-    getModelsError: useMemo(
-      () => (error: any) => {
+    getModelsError: useCallback(
+      (error: any) => {
         return !error
           ? null
           : ({
@@ -27,7 +27,7 @@ const useErrorService = () => {
                   ],
             } as ErrorMessage);
       },
-      [t],
+      [],
     ),
   };
 };

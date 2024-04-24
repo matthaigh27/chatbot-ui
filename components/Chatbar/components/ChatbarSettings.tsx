@@ -1,9 +1,9 @@
 import { IconFileExport, IconSettings } from '@tabler/icons-react';
-import { useContext, useState } from 'react';
+import { use, useState } from 'react';
 
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'react-i18next';
 
-import HomeContext from '@/pages/api/home/home.context';
+import HomeContext from '@/app/api/home/home.context';
 
 import { SettingDialog } from '@/components/Settings/SettingDialog';
 
@@ -27,14 +27,14 @@ export const ChatbarSettings = () => {
       conversations,
     },
     dispatch: homeDispatch,
-  } = useContext(HomeContext);
+  } = use(HomeContext);
 
   const {
     handleClearConversations,
     handleImportConversations,
     handleExportData,
     handleApiKeyChange,
-  } = useContext(ChatbarContext);
+  } = use(ChatbarContext);
 
   return (
     <div className="flex flex-col items-center space-y-1 border-t border-white/20 pt-1 text-sm">

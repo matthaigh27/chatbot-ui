@@ -1,9 +1,9 @@
 import { IconCheck, IconClipboard, IconDownload } from '@tabler/icons-react';
-import { FC, memo, useState } from 'react';
+import { Children, isValidElement, memo, useState } from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'react-i18next';
 
 import {
   generateRandomString,
@@ -15,16 +15,38 @@ interface Props {
   value: string;
 }
 
-export const CodeBlock: FC<Props> = memo(({ language, value }) => {
+function extractText(children: React.ReactNode): string {
+  // TODO: memo or something
+  if (typeof children === "string") {
+    return children;
+  }
+
+  if (isValidElement(children)) {
+    return extractText(children.props.children);
+  }
+
+  if (Array.isArray(children)) {
+    return children.map((child) => extractText(child)).join("");
+  }
+
+  // For other types (e.g., boolean, null, undefined), return an empty string
+  return children ? children.toString() : "";
+}
+
+export const CodeBlock = memo(({ children }: {children: React.ReactNode}) => {
   const { t } = useTranslation('markdown');
   const [isCopied, setIsCopied] = useState<Boolean>(false);
+  const child = Children.only(children);
+  const language = isValidElement(child) ? child.props.className : "";
+  const match = /language-(\w+)/.exec(language);
+  const value = extractText(children);
 
   const copyToClipboard = () => {
     if (!navigator.clipboard || !navigator.clipboard.writeText) {
       return;
     }
 
-    navigator.clipboard.writeText(value).then(() => {
+    navigator.clipboard.writeText(extractText(children)).then(() => {
       setIsCopied(true);
 
       setTimeout(() => {

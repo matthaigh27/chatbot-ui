@@ -9,14 +9,14 @@ import {
 import {
   KeyboardEvent,
   ReactElement,
-  useContext,
+  use,
   useEffect,
   useState,
 } from 'react';
 
 import { FolderInterface } from '@/types/folder';
 
-import HomeContext from '@/pages/api/home/home.context';
+import HomeContext from '@/app/api/home/home.context';
 
 import SidebarActionButton from '@/components/Buttons/SidebarActionButton';
 
@@ -33,7 +33,7 @@ const Folder = ({
   handleDrop,
   folderComponent,
 }: Props) => {
-  const { handleDeleteFolder, handleUpdateFolder } = useContext(HomeContext);
+  const { handleDeleteFolder, handleUpdateFolder } = use(HomeContext);
 
   const [isDeleting, setIsDeleting] = useState(false);
   const [isRenaming, setIsRenaming] = useState(false);

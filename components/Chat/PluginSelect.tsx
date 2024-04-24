@@ -1,6 +1,6 @@
 import { FC, useEffect, useRef } from 'react';
 
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'react-i18next';
 
 import { Plugin, PluginList } from '@/types/plugin';
 
@@ -66,7 +66,6 @@ export const PluginSelect: FC<Props> = ({
         <select
           ref={selectRef}
           className="w-full cursor-pointer bg-transparent p-2"
-          placeholder={t('Select a plugin') || ''}
           value={plugin?.id || ''}
           onChange={(e) => {
             onPluginChange(
@@ -79,6 +78,9 @@ export const PluginSelect: FC<Props> = ({
             handleKeyDown(e);
           }}
         >
+          <option value="" disabled>
+            {t('Select a plugin')}
+          </option>
           <option
             key="chatgpt"
             value="chatgpt"

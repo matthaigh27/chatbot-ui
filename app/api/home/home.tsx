@@ -1,10 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+"use client";
+
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useQuery } from 'react-query';
 
-import { GetServerSideProps } from 'next';
-import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import Head from 'next/head';
+import { useTranslation } from 'react-i18next';
 
 import { useCreateReducer } from '@/hooks/useCreateReducer';
 
@@ -28,7 +27,7 @@ import { getSettings } from '@/utils/app/settings';
 import { Conversation } from '@/types/chat';
 import { KeyValuePair } from '@/types/data';
 import { FolderInterface, FolderType } from '@/types/folder';
-import { OpenAIModelID, OpenAIModels, fallbackModelID } from '@/types/openai';
+import { OpenAIModelID, OpenAIModels } from '@/types/openai';
 import { Prompt } from '@/types/prompt';
 
 import { Chat } from '@/components/Chat/Chat';
@@ -92,27 +91,34 @@ const Home = ({
   );
 
   useEffect(() => {
+    console.log('first');
     if (data) dispatch({ field: 'models', value: data });
   }, [data, dispatch]);
 
   useEffect(() => {
+    console.log('second');
     dispatch({ field: 'modelError', value: getModelsError(error) });
   }, [dispatch, error, getModelsError]);
 
+
+  useEffect(() => {
+    console.log("getModelsError")
+  }, [getModelsError])
+
   // FETCH MODELS ----------------------------------------------
 
-  const handleSelectConversation = (conversation: Conversation) => {
+  const handleSelectConversation = useCallback((conversation: Conversation) => {
     dispatch({
       field: 'selectedConversation',
       value: conversation,
     });
 
     saveConversation(conversation);
-  };
+  }, [dispatch]);
 
   // FOLDER OPERATIONS  --------------------------------------------
 
-  const handleCreateFolder = (name: string, type: FolderType) => {
+  const handleCreateFolder = useCallback((name: string, type: FolderType) => {
     const newFolder: FolderInterface = {
       id: uuidv4(),
       name,
@@ -123,9 +129,9 @@ const Home = ({
 
     dispatch({ field: 'folders', value: updatedFolders });
     saveFolders(updatedFolders);
-  };
+  }, [dispatch, folders]);
 
-  const handleDeleteFolder = (folderId: string) => {
+  const handleDeleteFolder = useCallback((folderId: string) => {
     const updatedFolders = folders.filter((f) => f.id !== folderId);
     dispatch({ field: 'folders', value: updatedFolders });
     saveFolders(updatedFolders);
@@ -157,9 +163,9 @@ const Home = ({
 
     dispatch({ field: 'prompts', value: updatedPrompts });
     savePrompts(updatedPrompts);
-  };
+  }, [conversations, dispatch, folders, prompts]);
 
-  const handleUpdateFolder = (folderId: string, name: string) => {
+  const handleUpdateFolder = useCallback((folderId: string, name: string) => {
     const updatedFolders = folders.map((f) => {
       if (f.id === folderId) {
         return {
@@ -174,11 +180,11 @@ const Home = ({
     dispatch({ field: 'folders', value: updatedFolders });
 
     saveFolders(updatedFolders);
-  };
+  }, [dispatch, folders]);
 
   // CONVERSATION OPERATIONS  --------------------------------------------
 
-  const handleNewConversation = () => {
+  const handleNewConversation = useCallback(() => {
     const lastConversation = conversations[conversations.length - 1];
 
     const newConversation: Conversation = {
@@ -194,7 +200,7 @@ const Home = ({
       prompt: DEFAULT_SYSTEM_PROMPT,
       temperature: lastConversation?.temperature ?? DEFAULT_TEMPERATURE,
       folderId: null,
-    };
+    }
 
     const updatedConversations = [...conversations, newConversation];
 
@@ -205,9 +211,9 @@ const Home = ({
     saveConversations(updatedConversations);
 
     dispatch({ field: 'loading', value: false });
-  };
+  }, [conversations, defaultModelId, dispatch, t]);
 
-  const handleUpdateConversation = (
+  const handleUpdateConversation = useCallback((
     conversation: Conversation,
     data: KeyValuePair,
   ) => {
@@ -223,17 +229,19 @@ const Home = ({
 
     dispatch({ field: 'selectedConversation', value: single });
     dispatch({ field: 'conversations', value: all });
-  };
+  }, [conversations, dispatch]);
 
   // EFFECTS  --------------------------------------------
 
   useEffect(() => {
+    console.log('third');
     if (window.innerWidth < 640) {
       dispatch({ field: 'showChatbar', value: false });
     }
-  }, [selectedConversation]);
+  }, [dispatch, selectedConversation]);
 
   useEffect(() => {
+    console.log('fourth');
     defaultModelId &&
       dispatch({ field: 'defaultModelId', value: defaultModelId });
     serverSideApiKeyIsSet &&
@@ -246,11 +254,12 @@ const Home = ({
         field: 'serverSidePluginKeysSet',
         value: serverSidePluginKeysSet,
       });
-  }, [defaultModelId, serverSideApiKeyIsSet, serverSidePluginKeysSet]);
+  }, [defaultModelId, dispatch, serverSideApiKeyIsSet, serverSidePluginKeysSet]);
 
   // ON LOAD --------------------------------------------
 
   useEffect(() => {
+    console.log('fifth');
     const settings = getSettings();
     if (settings.theme) {
       dispatch({
@@ -340,34 +349,22 @@ const Home = ({
         },
       });
     }
-  }, [
-    defaultModelId,
-    dispatch,
-    serverSideApiKeyIsSet,
-    serverSidePluginKeysSet,
-  ]);
+  }, [defaultModelId, dispatch, serverSideApiKeyIsSet, serverSidePluginKeysSet]);
+
+  const context = useMemo(() => ({
+    ...contextValue,
+    handleNewConversation,
+    handleCreateFolder,
+    handleDeleteFolder,
+    handleUpdateFolder,
+    handleSelectConversation,
+    handleUpdateConversation,
+  }), [contextValue, handleNewConversation, handleCreateFolder, handleDeleteFolder, handleUpdateFolder, handleSelectConversation, handleUpdateConversation]);
 
   return (
     <HomeContext.Provider
-      value={{
-        ...contextValue,
-        handleNewConversation,
-        handleCreateFolder,
-        handleDeleteFolder,
-        handleUpdateFolder,
-        handleSelectConversation,
-        handleUpdateConversation,
-      }}
+      value={context}
     >
-      <Head>
-        <title>Chatbot UI</title>
-        <meta name="description" content="ChatGPT but better." />
-        <meta
-          name="viewport"
-          content="height=device-height ,width=device-width, initial-scale=1, user-scalable=no"
-        />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
       {selectedConversation && (
         <main
           className={`flex h-screen w-screen flex-col text-sm text-white dark:text-white ${lightMode}`}
@@ -394,38 +391,3 @@ const Home = ({
   );
 };
 export default Home;
-
-export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
-  const defaultModelId =
-    (process.env.DEFAULT_MODEL &&
-      Object.values(OpenAIModelID).includes(
-        process.env.DEFAULT_MODEL as OpenAIModelID,
-      ) &&
-      process.env.DEFAULT_MODEL) ||
-    fallbackModelID;
-
-  let serverSidePluginKeysSet = false;
-
-  const googleApiKey = process.env.GOOGLE_API_KEY;
-  const googleCSEId = process.env.GOOGLE_CSE_ID;
-
-  if (googleApiKey && googleCSEId) {
-    serverSidePluginKeysSet = true;
-  }
-
-  return {
-    props: {
-      serverSideApiKeyIsSet: !!process.env.OPENAI_API_KEY,
-      defaultModelId,
-      serverSidePluginKeysSet,
-      ...(await serverSideTranslations(locale ?? 'en', [
-        'common',
-        'chat',
-        'sidebar',
-        'markdown',
-        'promptbar',
-        'settings',
-      ])),
-    },
-  };
-};

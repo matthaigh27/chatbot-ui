@@ -1,10 +1,10 @@
 import { IconKey } from '@tabler/icons-react';
-import { KeyboardEvent, useContext, useEffect, useRef, useState } from 'react';
+import { KeyboardEvent, use, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { PluginID, PluginKey } from '@/types/plugin';
 
-import HomeContext from '@/pages/api/home/home.context';
+import HomeContext from '@/app/api/home/home.context';
 
 import { SidebarButton } from '@/components/Sidebar/SidebarButton';
 
@@ -15,10 +15,10 @@ export const PluginKeys = () => {
 
   const {
     state: { pluginKeys },
-  } = useContext(HomeContext);
+  } = use(HomeContext);
 
   const { handlePluginKeyChange, handleClearPluginKey } =
-    useContext(ChatbarContext);
+    use(ChatbarContext);
 
   const [isChanging, setIsChanging] = useState(false);
 

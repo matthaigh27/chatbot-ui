@@ -1,6 +1,6 @@
-import { FC, useContext, useEffect, useReducer, useRef } from 'react';
+import { FC, use, useEffect, useRef } from 'react';
 
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'react-i18next';
 
 import { useCreateReducer } from '@/hooks/useCreateReducer';
 
@@ -8,7 +8,7 @@ import { getSettings, saveSettings } from '@/utils/app/settings';
 
 import { Settings } from '@/types/settings';
 
-import HomeContext from '@/pages/api/home/home.context';
+import HomeContext from '@/app/api/home/home.context';
 
 interface Props {
   open: boolean;
@@ -21,7 +21,7 @@ export const SettingDialog: FC<Props> = ({ open, onClose }) => {
   const { state, dispatch } = useCreateReducer<Settings>({
     initialState: settings,
   });
-  const { dispatch: homeDispatch } = useContext(HomeContext);
+  const { dispatch: homeDispatch } = use(HomeContext);
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

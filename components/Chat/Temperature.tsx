@@ -1,10 +1,10 @@
-import { FC, useContext, useState } from 'react';
+import { FC, use, useState } from 'react';
 
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'react-i18next';
 
 import { DEFAULT_TEMPERATURE } from '@/utils/app/const';
 
-import HomeContext from '@/pages/api/home/home.context';
+import HomeContext from '@/app/api/home/home.context';
 
 interface Props {
   label: string;
@@ -17,7 +17,7 @@ export const TemperatureSlider: FC<Props> = ({
 }) => {
   const {
     state: { conversations },
-  } = useContext(HomeContext);
+  } = use(HomeContext);
   const lastConversation = conversations[conversations.length - 1];
   const [temperature, setTemperature] = useState(
     lastConversation?.temperature ?? DEFAULT_TEMPERATURE,

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useCreateReducer } from '@/hooks/useCreateReducer';
@@ -8,7 +8,7 @@ import { savePrompts } from '@/utils/app/prompts';
 import { OpenAIModels } from '@/types/openai';
 import { Prompt } from '@/types/prompt';
 
-import HomeContext from '@/pages/api/home/home.context';
+import HomeContext from '@/app/api/home/home.context';
 
 import { PromptFolders } from './components/PromptFolders';
 import { PromptbarSettings } from './components/PromptbarSettings';
@@ -31,7 +31,7 @@ const Promptbar = () => {
     state: { prompts, defaultModelId, showPromptbar },
     dispatch: homeDispatch,
     handleCreateFolder,
-  } = useContext(HomeContext);
+  } = use(HomeContext);
 
   const {
     state: { searchTerm, filteredPrompts },

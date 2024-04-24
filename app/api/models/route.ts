@@ -2,11 +2,10 @@ import { OPENAI_API_HOST, OPENAI_API_TYPE, OPENAI_API_VERSION, OPENAI_ORGANIZATI
 
 import { OpenAIModel, OpenAIModelID, OpenAIModels } from '@/types/openai';
 
-export const config = {
-  runtime: 'edge',
-};
+export const runtime = 'edge';
 
-const handler = async (req: Request): Promise<Response> => {
+// TODO: server action
+export async function POST(req: Request): Promise<Response> {
   try {
     const { key } = (await req.json()) as {
       key: string;
@@ -68,5 +67,3 @@ const handler = async (req: Request): Promise<Response> => {
     return new Response('Error', { status: 500 });
   }
 };
-
-export default handler;

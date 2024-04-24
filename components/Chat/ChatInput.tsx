@@ -10,19 +10,19 @@ import {
   KeyboardEvent,
   MutableRefObject,
   useCallback,
-  useContext,
+  use,
   useEffect,
   useRef,
   useState,
 } from 'react';
 
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'react-i18next';
 
 import { Message } from '@/types/chat';
 import { Plugin } from '@/types/plugin';
 import { Prompt } from '@/types/prompt';
 
-import HomeContext from '@/pages/api/home/home.context';
+import HomeContext from '@/app/api/home/home.context';
 
 import { PluginSelect } from './PluginSelect';
 import { PromptList } from './PromptList';
@@ -51,7 +51,7 @@ export const ChatInput = ({
     state: { selectedConversation, messageIsStreaming, prompts },
 
     dispatch: homeDispatch,
-  } = useContext(HomeContext);
+  } = use(HomeContext);
 
   const [content, setContent] = useState<string>();
   const [isTyping, setIsTyping] = useState<boolean>(false);

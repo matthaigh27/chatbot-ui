@@ -7,7 +7,7 @@ import {
 import {
   DragEvent,
   MouseEventHandler,
-  useContext,
+  use,
   useEffect,
   useState,
 } from 'react';
@@ -28,7 +28,7 @@ export const PromptComponent = ({ prompt }: Props) => {
     dispatch: promptDispatch,
     handleUpdatePrompt,
     handleDeletePrompt,
-  } = useContext(PromptbarContext);
+  } = use(PromptbarContext);
 
   const [showModal, setShowModal] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState(false);

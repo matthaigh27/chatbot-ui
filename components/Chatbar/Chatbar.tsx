@@ -1,6 +1,6 @@
-import { useCallback, useContext, useEffect } from 'react';
+import { useCallback, use, useEffect } from 'react';
 
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'react-i18next';
 
 import { useCreateReducer } from '@/hooks/useCreateReducer';
 
@@ -14,7 +14,7 @@ import { LatestExportFormat, SupportedExportFormats } from '@/types/export';
 import { OpenAIModels } from '@/types/openai';
 import { PluginKey } from '@/types/plugin';
 
-import HomeContext from '@/pages/api/home/home.context';
+import HomeContext from '@/app/api/home/home.context';
 
 import { ChatFolders } from './components/ChatFolders';
 import { ChatbarSettings } from './components/ChatbarSettings';
@@ -39,7 +39,7 @@ export const Chatbar = () => {
     handleCreateFolder,
     handleNewConversation,
     handleUpdateConversation,
-  } = useContext(HomeContext);
+  } = use(HomeContext);
 
   const {
     state: { searchTerm, filteredConversations },
