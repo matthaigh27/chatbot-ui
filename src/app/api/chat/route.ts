@@ -1,11 +1,11 @@
-import { DEFAULT_SYSTEM_PROMPT, DEFAULT_TEMPERATURE } from '@/utils/app/const';
-import { OpenAIError, OpenAIStream } from '@/utils/server';
+import { DEFAULT_SYSTEM_PROMPT, DEFAULT_TEMPERATURE } from "@/utils/app/const";
+import { OpenAIError, OpenAIStream } from "@/utils/server";
 
-import { ChatBody, Message } from '@/types/chat';
+import { ChatBody, Message } from "@/types/chat";
 
 import { type TiktokenModel, getEncoding, getEncodingNameForModel } from "js-tiktoken";
 
-export const runtime = 'edge';
+export const runtime = "edge";
 
 export async function POST(req: Request): Promise<Response> {
   try {
@@ -44,9 +44,9 @@ export async function POST(req: Request): Promise<Response> {
   } catch (error) {
     console.error(error);
     if (error instanceof OpenAIError) {
-      return new Response('Error', { status: 500, statusText: error.message });
+      return new Response("Error", { status: 500, statusText: error.message });
     } else {
-      return new Response('Error', { status: 500 });
+      return new Response("Error", { status: 500 });
     }
   }
-};
+}

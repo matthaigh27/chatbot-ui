@@ -1,7 +1,7 @@
-import { Conversation } from '@/types/chat';
-import { OpenAIModelID, OpenAIModels } from '@/types/openai';
+import { Conversation } from "@/types/chat";
+import { OpenAIModelID, OpenAIModels } from "@/types/openai";
 
-import { DEFAULT_SYSTEM_PROMPT, DEFAULT_TEMPERATURE } from './const';
+import { DEFAULT_SYSTEM_PROMPT, DEFAULT_TEMPERATURE } from "./const";
 
 export const cleanSelectedConversation = (conversation: Conversation) => {
   // added model for each conversation (3/20/23)
@@ -60,7 +60,7 @@ export const cleanConversationHistory = (history: any[]): Conversation[] => {
   // added messages (4/16/23)
 
   if (!Array.isArray(history)) {
-    console.warn('history is not an array. Returning an empty array.');
+    console.warn("history is not an array. Returning an empty array.");
     return [];
   }
 
@@ -89,10 +89,7 @@ export const cleanConversationHistory = (history: any[]): Conversation[] => {
       acc.push(conversation);
       return acc;
     } catch (error) {
-      console.warn(
-        `error while cleaning conversations' history. Removing culprit`,
-        error,
-      );
+      console.warn(`error while cleaning conversations' history. Removing culprit`, error);
     }
     return acc;
   }, []);

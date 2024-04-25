@@ -1,13 +1,13 @@
-import { type Metadata, type Viewport } from "next";
-import { Toaster } from 'react-hot-toast';
+import { Toaster } from "react-hot-toast";
 
-import { Inter } from 'next/font/google';
+import { type Metadata, type Viewport } from "next";
+import { Inter } from "next/font/google";
 
 import Providers from "./providers";
 
-import '@/styles/globals.css';
+import "@/styles/globals.css";
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Chatbot UI",

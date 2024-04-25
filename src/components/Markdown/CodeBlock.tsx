@@ -1,14 +1,10 @@
-import { IconCheck, IconClipboard, IconDownload } from '@tabler/icons-react';
-import { Children, isValidElement, memo, useState } from 'react';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import { IconCheck, IconClipboard, IconDownload } from "@tabler/icons-react";
+import { Children, isValidElement, memo, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneDark } from "react-syntax-highlighter/dist/cjs/styles/prism";
 
-import { useTranslation } from 'react-i18next';
-
-import {
-  generateRandomString,
-  programmingLanguages,
-} from '@/utils/app/codeblock';
+import { generateRandomString, programmingLanguages } from "@/utils/app/codeblock";
 
 interface Props {
   language: string;
@@ -33,8 +29,8 @@ function extractText(children: React.ReactNode): string {
   return children ? children.toString() : "";
 }
 
-export const CodeBlock = memo(({ children }: {children: React.ReactNode}) => {
-  const { t } = useTranslation('markdown');
+export const CodeBlock = memo(({ children }: { children: React.ReactNode }) => {
+  const { t } = useTranslation("markdown");
   const [isCopied, setIsCopied] = useState<Boolean>(false);
   const child = Children.only(children);
   const language = isValidElement(child) ? child.props.className : "";
@@ -55,27 +51,21 @@ export const CodeBlock = memo(({ children }: {children: React.ReactNode}) => {
     });
   };
   const downloadAsFile = () => {
-    const fileExtension = programmingLanguages[language] || '.file';
-    const suggestedFileName = `file-${generateRandomString(
-      3,
-      true,
-    )}${fileExtension}`;
-    const fileName = window.prompt(
-      t('Enter file name') || '',
-      suggestedFileName,
-    );
+    const fileExtension = programmingLanguages[language] || ".file";
+    const suggestedFileName = `file-${generateRandomString(3, true)}${fileExtension}`;
+    const fileName = window.prompt(t("Enter file name") || "", suggestedFileName);
 
     if (!fileName) {
       // user pressed cancel on prompt
       return;
     }
 
-    const blob = new Blob([value], { type: 'text/plain' });
+    const blob = new Blob([value], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.download = fileName;
     link.href = url;
-    link.style.display = 'none';
+    link.style.display = "none";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -92,25 +82,18 @@ export const CodeBlock = memo(({ children }: {children: React.ReactNode}) => {
             onClick={copyToClipboard}
           >
             {isCopied ? <IconCheck size={18} /> : <IconClipboard size={18} />}
-            {isCopied ? t('Copied!') : t('Copy code')}
+            {isCopied ? t("Copied!") : t("Copy code")}
           </button>
-          <button
-            className="flex items-center rounded bg-none p-1 text-xs text-white"
-            onClick={downloadAsFile}
-          >
+          <button className="flex items-center rounded bg-none p-1 text-xs text-white" onClick={downloadAsFile}>
             <IconDownload size={18} />
           </button>
         </div>
       </div>
 
-      <SyntaxHighlighter
-        language={language}
-        style={oneDark}
-        customStyle={{ margin: 0 }}
-      >
+      <SyntaxHighlighter language={language} style={oneDark} customStyle={{ margin: 0 }}>
         {value}
       </SyntaxHighlighter>
     </div>
   );
 });
-CodeBlock.displayName = 'CodeBlock';
+CodeBlock.displayName = "CodeBlock";

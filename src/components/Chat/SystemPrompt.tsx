@@ -1,21 +1,13 @@
-import {
-  FC,
-  KeyboardEvent,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { FC, KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
-import { useTranslation } from 'react-i18next';
+import { DEFAULT_SYSTEM_PROMPT } from "@/utils/app/const";
 
-import { DEFAULT_SYSTEM_PROMPT } from '@/utils/app/const';
+import { Conversation } from "@/types/chat";
+import { Prompt } from "@/types/prompt";
 
-import { Conversation } from '@/types/chat';
-import { Prompt } from '@/types/prompt';
-
-import { PromptList } from './PromptList';
-import { VariableModal } from './VariableModal';
+import { PromptList } from "./PromptList";
+import { VariableModal } from "./VariableModal";
 
 interface Props {
   conversation: Conversation;
@@ -23,17 +15,13 @@ interface Props {
   onChangePrompt: (prompt: string) => void;
 }
 
-export const SystemPrompt: FC<Props> = ({
-  conversation,
-  prompts,
-  onChangePrompt,
-}) => {
-  const { t } = useTranslation('chat');
+export const SystemPrompt: FC<Props> = ({ conversation, prompts, onChangePrompt }) => {
+  const { t } = useTranslation("chat");
 
-  const [value, setValue] = useState<string>('');
+  const [value, setValue] = useState<string>("");
   const [activePromptIndex, setActivePromptIndex] = useState(0);
   const [showPromptList, setShowPromptList] = useState(false);
-  const [promptInputValue, setPromptInputValue] = useState('');
+  const [promptInputValue, setPromptInputValue] = useState("");
   const [variables, setVariables] = useState<string[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -50,10 +38,10 @@ export const SystemPrompt: FC<Props> = ({
 
     if (value.length > maxLength) {
       alert(
-        t(
-          `Prompt limit is {{maxLength}} characters. You have entered {{valueLength}} characters.`,
-          { maxLength, valueLength: value.length },
-        ),
+        t(`Prompt limit is {{maxLength}} characters. You have entered {{valueLength}} characters.`, {
+          maxLength,
+          valueLength: value.length,
+        }),
       );
       return;
     }
@@ -96,7 +84,7 @@ export const SystemPrompt: FC<Props> = ({
       setPromptInputValue(match[0].slice(1));
     } else {
       setShowPromptList(false);
-      setPromptInputValue('');
+      setPromptInputValue("");
     }
   }, []);
 
@@ -132,25 +120,19 @@ export const SystemPrompt: FC<Props> = ({
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (showPromptList) {
-      if (e.key === 'ArrowDown') {
+      if (e.key === "ArrowDown") {
         e.preventDefault();
-        setActivePromptIndex((prevIndex) =>
-          prevIndex < prompts.length - 1 ? prevIndex + 1 : prevIndex,
-        );
-      } else if (e.key === 'ArrowUp') {
+        setActivePromptIndex((prevIndex) => (prevIndex < prompts.length - 1 ? prevIndex + 1 : prevIndex));
+      } else if (e.key === "ArrowUp") {
         e.preventDefault();
-        setActivePromptIndex((prevIndex) =>
-          prevIndex > 0 ? prevIndex - 1 : prevIndex,
-        );
-      } else if (e.key === 'Tab') {
+        setActivePromptIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : prevIndex));
+      } else if (e.key === "Tab") {
         e.preventDefault();
-        setActivePromptIndex((prevIndex) =>
-          prevIndex < prompts.length - 1 ? prevIndex + 1 : 0,
-        );
-      } else if (e.key === 'Enter') {
+        setActivePromptIndex((prevIndex) => (prevIndex < prompts.length - 1 ? prevIndex + 1 : 0));
+      } else if (e.key === "Enter") {
         e.preventDefault();
         handleInitModal();
-      } else if (e.key === 'Escape') {
+      } else if (e.key === "Escape") {
         e.preventDefault();
         setShowPromptList(false);
       } else {
@@ -161,7 +143,7 @@ export const SystemPrompt: FC<Props> = ({
 
   useEffect(() => {
     if (textareaRef && textareaRef.current) {
-      textareaRef.current.style.height = 'inherit';
+      textareaRef.current.style.height = "inherit";
       textareaRef.current.style.height = `${textareaRef.current?.scrollHeight}px`;
     }
   }, [value]);
@@ -176,43 +158,32 @@ export const SystemPrompt: FC<Props> = ({
 
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
-      if (
-        promptListRef.current &&
-        !promptListRef.current.contains(e.target as Node)
-      ) {
+      if (promptListRef.current && !promptListRef.current.contains(e.target as Node)) {
         setShowPromptList(false);
       }
     };
 
-    window.addEventListener('click', handleOutsideClick);
+    window.addEventListener("click", handleOutsideClick);
 
     return () => {
-      window.removeEventListener('click', handleOutsideClick);
+      window.removeEventListener("click", handleOutsideClick);
     };
   }, []);
 
   return (
     <div className="flex flex-col">
-      <label className="mb-2 text-left text-neutral-700 dark:text-neutral-400">
-        {t('System Prompt')}
-      </label>
+      <label className="mb-2 text-left text-neutral-700 dark:text-neutral-400">{t("System Prompt")}</label>
       <textarea
         ref={textareaRef}
         className="w-full rounded-lg border border-neutral-200 bg-transparent px-4 py-3 text-neutral-900 dark:border-neutral-600 dark:text-neutral-100"
         style={{
-          resize: 'none',
+          resize: "none",
           bottom: `${textareaRef?.current?.scrollHeight}px`,
-          maxHeight: '300px',
-          overflow: `${
-            textareaRef.current && textareaRef.current.scrollHeight > 400
-              ? 'auto'
-              : 'hidden'
-          }`,
+          maxHeight: "300px",
+          overflow: `${textareaRef.current && textareaRef.current.scrollHeight > 400 ? "auto" : "hidden"}`,
         }}
-        placeholder={
-          t(`Enter a prompt or type "/" to select a prompt...`) || ''
-        }
-        value={t(value) || ''}
+        placeholder={t(`Enter a prompt or type "/" to select a prompt...`) || ""}
+        value={t(value) || ""}
         rows={1}
         onChange={handleChange}
         onKeyDown={handleKeyDown}

@@ -1,64 +1,41 @@
-import { IconFileExport, IconSettings } from '@tabler/icons-react';
-import { use, useState } from 'react';
+import { IconFileExport, IconSettings } from "@tabler/icons-react";
+import { use, useState } from "react";
+import { useTranslation } from "react-i18next";
 
-import { useTranslation } from 'react-i18next';
+import HomeContext from "@/app/api/home/home.context";
 
-import HomeContext from '@/app/api/home/home.context';
+import { SettingDialog } from "@/components/Settings/SettingDialog";
 
-import { SettingDialog } from '@/components/Settings/SettingDialog';
-
-import { Import } from '../../Settings/Import';
-import { Key } from '../../Settings/Key';
-import { SidebarButton } from '../../Sidebar/SidebarButton';
-import ChatbarContext from '../Chatbar.context';
-import { ClearConversations } from './ClearConversations';
-import { PluginKeys } from './PluginKeys';
+import { Import } from "../../Settings/Import";
+import { Key } from "../../Settings/Key";
+import { SidebarButton } from "../../Sidebar/SidebarButton";
+import ChatbarContext from "../Chatbar.context";
+import { ClearConversations } from "./ClearConversations";
+import { PluginKeys } from "./PluginKeys";
 
 export const ChatbarSettings = () => {
-  const { t } = useTranslation('sidebar');
+  const { t } = useTranslation("sidebar");
   const [isSettingDialogOpen, setIsSettingDialog] = useState<boolean>(false);
 
   const {
-    state: {
-      apiKey,
-      lightMode,
-      serverSideApiKeyIsSet,
-      serverSidePluginKeysSet,
-      conversations,
-    },
+    state: { apiKey, lightMode, serverSideApiKeyIsSet, serverSidePluginKeysSet, conversations },
     dispatch: homeDispatch,
   } = use(HomeContext);
 
-  const {
-    handleClearConversations,
-    handleImportConversations,
-    handleExportData,
-    handleApiKeyChange,
-  } = use(ChatbarContext);
+  const { handleClearConversations, handleImportConversations, handleExportData, handleApiKeyChange } =
+    use(ChatbarContext);
 
   return (
     <div className="flex flex-col items-center space-y-1 border-t border-white/20 pt-1 text-sm">
-      {conversations.length > 0 ? (
-        <ClearConversations onClearConversations={handleClearConversations} />
-      ) : null}
+      {conversations.length > 0 ? <ClearConversations onClearConversations={handleClearConversations} /> : null}
 
       <Import onImport={handleImportConversations} />
 
-      <SidebarButton
-        text={t('Export data')}
-        icon={<IconFileExport size={18} />}
-        onClick={() => handleExportData()}
-      />
+      <SidebarButton text={t("Export data")} icon={<IconFileExport size={18} />} onClick={() => handleExportData()} />
 
-      <SidebarButton
-        text={t('Settings')}
-        icon={<IconSettings size={18} />}
-        onClick={() => setIsSettingDialog(true)}
-      />
+      <SidebarButton text={t("Settings")} icon={<IconSettings size={18} />} onClick={() => setIsSettingDialog(true)} />
 
-      {!serverSideApiKeyIsSet ? (
-        <Key apiKey={apiKey} onApiKeyChange={handleApiKeyChange} />
-      ) : null}
+      {!serverSideApiKeyIsSet ? <Key apiKey={apiKey} onApiKeyChange={handleApiKeyChange} /> : null}
 
       {!serverSidePluginKeysSet ? <PluginKeys /> : null}
 

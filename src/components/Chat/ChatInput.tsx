@@ -1,32 +1,16 @@
-import {
-  IconArrowDown,
-  IconBolt,
-  IconBrandGoogle,
-  IconPlayerStop,
-  IconRepeat,
-  IconSend,
-} from '@tabler/icons-react';
-import {
-  KeyboardEvent,
-  MutableRefObject,
-  useCallback,
-  use,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { IconArrowDown, IconBolt, IconBrandGoogle, IconPlayerStop, IconRepeat, IconSend } from "@tabler/icons-react";
+import { KeyboardEvent, MutableRefObject, use, useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
-import { useTranslation } from 'react-i18next';
+import { Message } from "@/types/chat";
+import { Plugin } from "@/types/plugin";
+import { Prompt } from "@/types/prompt";
 
-import { Message } from '@/types/chat';
-import { Plugin } from '@/types/plugin';
-import { Prompt } from '@/types/prompt';
+import HomeContext from "@/app/api/home/home.context";
 
-import HomeContext from '@/app/api/home/home.context';
-
-import { PluginSelect } from './PluginSelect';
-import { PromptList } from './PromptList';
-import { VariableModal } from './VariableModal';
+import { PluginSelect } from "./PluginSelect";
+import { PromptList } from "./PromptList";
+import { VariableModal } from "./VariableModal";
 
 interface Props {
   onSend: (message: Message, plugin: Plugin | null) => void;
@@ -45,7 +29,7 @@ export const ChatInput = ({
   textareaRef,
   showScrollDownButton,
 }: Props) => {
-  const { t } = useTranslation('chat');
+  const { t } = useTranslation("chat");
 
   const {
     state: { selectedConversation, messageIsStreaming, prompts },
@@ -57,7 +41,7 @@ export const ChatInput = ({
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [showPromptList, setShowPromptList] = useState(false);
   const [activePromptIndex, setActivePromptIndex] = useState(0);
-  const [promptInputValue, setPromptInputValue] = useState('');
+  const [promptInputValue, setPromptInputValue] = useState("");
   const [variables, setVariables] = useState<string[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [showPluginSelect, setShowPluginSelect] = useState(false);
@@ -75,10 +59,10 @@ export const ChatInput = ({
 
     if (maxLength && value.length > maxLength) {
       alert(
-        t(
-          `Message limit is {{maxLength}} characters. You have entered {{valueLength}} characters.`,
-          { maxLength, valueLength: value.length },
-        ),
+        t(`Message limit is {{maxLength}} characters. You have entered {{valueLength}} characters.`, {
+          maxLength,
+          valueLength: value.length,
+        }),
       );
       return;
     }
@@ -93,12 +77,12 @@ export const ChatInput = ({
     }
 
     if (!content) {
-      alert(t('Please enter a message'));
+      alert(t("Please enter a message"));
       return;
     }
 
-    onSend({ role: 'user', content }, plugin);
-    setContent('');
+    onSend({ role: "user", content }, plugin);
+    setContent("");
     setPlugin(null);
 
     if (window.innerWidth < 640 && textareaRef && textareaRef.current) {
@@ -114,10 +98,8 @@ export const ChatInput = ({
   };
 
   const isMobile = () => {
-    const userAgent =
-      typeof window.navigator === 'undefined' ? '' : navigator.userAgent;
-    const mobileRegex =
-      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i;
+    const userAgent = typeof window.navigator === "undefined" ? "" : navigator.userAgent;
+    const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i;
     return mobileRegex.test(userAgent);
   };
 
@@ -125,10 +107,7 @@ export const ChatInput = ({
     const selectedPrompt = filteredPrompts[activePromptIndex];
     if (selectedPrompt) {
       setContent((prevContent) => {
-        const newContent = prevContent?.replace(
-          /\/\w*$/,
-          selectedPrompt.content,
-        );
+        const newContent = prevContent?.replace(/\/\w*$/, selectedPrompt.content);
         return newContent;
       });
       handlePromptSelect(selectedPrompt);
@@ -138,34 +117,28 @@ export const ChatInput = ({
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (showPromptList) {
-      if (e.key === 'ArrowDown') {
+      if (e.key === "ArrowDown") {
         e.preventDefault();
-        setActivePromptIndex((prevIndex) =>
-          prevIndex < prompts.length - 1 ? prevIndex + 1 : prevIndex,
-        );
-      } else if (e.key === 'ArrowUp') {
+        setActivePromptIndex((prevIndex) => (prevIndex < prompts.length - 1 ? prevIndex + 1 : prevIndex));
+      } else if (e.key === "ArrowUp") {
         e.preventDefault();
-        setActivePromptIndex((prevIndex) =>
-          prevIndex > 0 ? prevIndex - 1 : prevIndex,
-        );
-      } else if (e.key === 'Tab') {
+        setActivePromptIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : prevIndex));
+      } else if (e.key === "Tab") {
         e.preventDefault();
-        setActivePromptIndex((prevIndex) =>
-          prevIndex < prompts.length - 1 ? prevIndex + 1 : 0,
-        );
-      } else if (e.key === 'Enter') {
+        setActivePromptIndex((prevIndex) => (prevIndex < prompts.length - 1 ? prevIndex + 1 : 0));
+      } else if (e.key === "Enter") {
         e.preventDefault();
         handleInitModal();
-      } else if (e.key === 'Escape') {
+      } else if (e.key === "Escape") {
         e.preventDefault();
         setShowPromptList(false);
       } else {
         setActivePromptIndex(0);
       }
-    } else if (e.key === 'Enter' && !isTyping && !isMobile() && !e.shiftKey) {
+    } else if (e.key === "Enter" && !isTyping && !isMobile() && !e.shiftKey) {
       e.preventDefault();
       handleSend();
-    } else if (e.key === '/' && e.metaKey) {
+    } else if (e.key === "/" && e.metaKey) {
       e.preventDefault();
       setShowPluginSelect(!showPluginSelect);
     }
@@ -191,7 +164,7 @@ export const ChatInput = ({
       setPromptInputValue(match[0].slice(1));
     } else {
       setShowPromptList(false);
-      setPromptInputValue('');
+      setPromptInputValue("");
     }
   }, []);
 
@@ -231,28 +204,23 @@ export const ChatInput = ({
 
   useEffect(() => {
     if (textareaRef && textareaRef.current) {
-      textareaRef.current.style.height = 'inherit';
+      textareaRef.current.style.height = "inherit";
       textareaRef.current.style.height = `${textareaRef.current?.scrollHeight}px`;
-      textareaRef.current.style.overflow = `${
-        textareaRef?.current?.scrollHeight > 400 ? 'auto' : 'hidden'
-      }`;
+      textareaRef.current.style.overflow = `${textareaRef?.current?.scrollHeight > 400 ? "auto" : "hidden"}`;
     }
   }, [content]);
 
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
-      if (
-        promptListRef.current &&
-        !promptListRef.current.contains(e.target as Node)
-      ) {
+      if (promptListRef.current && !promptListRef.current.contains(e.target as Node)) {
         setShowPromptList(false);
       }
     };
 
-    window.addEventListener('click', handleOutsideClick);
+    window.addEventListener("click", handleOutsideClick);
 
     return () => {
-      window.removeEventListener('click', handleOutsideClick);
+      window.removeEventListener("click", handleOutsideClick);
     };
   }, []);
 
@@ -264,20 +232,18 @@ export const ChatInput = ({
             className="absolute top-0 left-0 right-0 mx-auto mb-3 flex w-fit items-center gap-3 rounded border border-neutral-200 bg-white py-2 px-4 text-black hover:opacity-50 dark:border-neutral-600 dark:bg-[#343541] dark:text-white md:mb-0 md:mt-2"
             onClick={handleStopConversation}
           >
-            <IconPlayerStop size={16} /> {t('Stop Generating')}
+            <IconPlayerStop size={16} /> {t("Stop Generating")}
           </button>
         )}
 
-        {!messageIsStreaming &&
-          selectedConversation &&
-          selectedConversation.messages.length > 0 && (
-            <button
-              className="absolute top-0 left-0 right-0 mx-auto mb-3 flex w-fit items-center gap-3 rounded border border-neutral-200 bg-white py-2 px-4 text-black hover:opacity-50 dark:border-neutral-600 dark:bg-[#343541] dark:text-white md:mb-0 md:mt-2"
-              onClick={onRegenerate}
-            >
-              <IconRepeat size={16} /> {t('Regenerate response')}
-            </button>
-          )}
+        {!messageIsStreaming && selectedConversation && selectedConversation.messages.length > 0 && (
+          <button
+            className="absolute top-0 left-0 right-0 mx-auto mb-3 flex w-fit items-center gap-3 rounded border border-neutral-200 bg-white py-2 px-4 text-black hover:opacity-50 dark:border-neutral-600 dark:bg-[#343541] dark:text-white md:mb-0 md:mt-2"
+            onClick={onRegenerate}
+          >
+            <IconRepeat size={16} /> {t("Regenerate response")}
+          </button>
+        )}
 
         <div className="relative mx-2 flex w-full flex-grow flex-col rounded-md border border-black/10 bg-white shadow-[0_0_10px_rgba(0,0,0,0.10)] dark:border-gray-900/50 dark:bg-[#40414F] dark:text-white dark:shadow-[0_0_15px_rgba(0,0,0,0.10)] sm:mx-4">
           <button
@@ -293,7 +259,7 @@ export const ChatInput = ({
               <PluginSelect
                 plugin={plugin}
                 onKeyDown={(e: any) => {
-                  if (e.key === 'Escape') {
+                  if (e.key === "Escape") {
                     e.preventDefault();
                     setShowPluginSelect(false);
                     textareaRef.current?.focus();
@@ -315,18 +281,12 @@ export const ChatInput = ({
             ref={textareaRef}
             className="m-0 w-full resize-none border-0 bg-transparent p-0 py-2 pr-8 pl-10 text-black dark:bg-transparent dark:text-white md:py-3 md:pl-10"
             style={{
-              resize: 'none',
+              resize: "none",
               bottom: `${textareaRef?.current?.scrollHeight}px`,
-              maxHeight: '400px',
-              overflow: `${
-                textareaRef.current && textareaRef.current.scrollHeight > 400
-                  ? 'auto'
-                  : 'hidden'
-              }`,
+              maxHeight: "400px",
+              overflow: `${textareaRef.current && textareaRef.current.scrollHeight > 400 ? "auto" : "hidden"}`,
             }}
-            placeholder={
-              t('Type a message or type "/" to select a prompt...') || ''
-            }
+            placeholder={t('Type a message or type "/" to select a prompt...') || ""}
             value={content}
             rows={1}
             onCompositionStart={() => setIsTyping(true)}
@@ -380,15 +340,10 @@ export const ChatInput = ({
         </div>
       </div>
       <div className="px-3 pt-2 pb-3 text-center text-[12px] text-black/50 dark:text-white/50 md:px-4 md:pt-3 md:pb-6">
-        <a
-          href="https://github.com/mckaywrigley/chatbot-ui"
-          target="_blank"
-          rel="noreferrer"
-          className="underline"
-        >
+        <a href="https://github.com/mckaywrigley/chatbot-ui" target="_blank" rel="noreferrer" className="underline">
           ChatBot UI
         </a>
-        .{' '}
+        .{" "}
         {t(
           "Chatbot UI is an advanced chatbot kit for OpenAI's chat models aiming to mimic ChatGPT's interface and functionality.",
         )}

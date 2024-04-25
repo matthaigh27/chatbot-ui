@@ -1,17 +1,15 @@
-import { OpenAIModelID, fallbackModelID } from '@/types/openai';
+import { OpenAIModelID, fallbackModelID } from "@/types/openai";
 
-import Home from './home';
+import Home from "./home";
 
-export const runtime = 'edge';
+export const runtime = "edge";
 
 export default async function Index() {
   // There used to be { locale }
 
   const defaultModelId =
     (process.env.DEFAULT_MODEL &&
-      Object.values(OpenAIModelID).includes(
-        process.env.DEFAULT_MODEL as OpenAIModelID,
-      ) &&
+      Object.values(OpenAIModelID).includes(process.env.DEFAULT_MODEL as OpenAIModelID) &&
       process.env.DEFAULT_MODEL) ||
     fallbackModelID;
 

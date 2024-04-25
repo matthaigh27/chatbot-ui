@@ -1,12 +1,12 @@
-import { use } from 'react';
+import { use } from "react";
 
-import { FolderInterface } from '@/types/folder';
+import { FolderInterface } from "@/types/folder";
 
-import HomeContext from '@/app/api/home/home.context';
+import HomeContext from "@/app/api/home/home.context";
 
-import Folder from '@/components/Folder';
+import Folder from "@/components/Folder";
 
-import { ConversationComponent } from './Conversation';
+import { ConversationComponent } from "./Conversation";
 
 interface Props {
   searchTerm: string;
@@ -20,9 +20,9 @@ export const ChatFolders = ({ searchTerm }: Props) => {
 
   const handleDrop = (e: any, folder: FolderInterface) => {
     if (e.dataTransfer) {
-      const conversation = JSON.parse(e.dataTransfer.getData('conversation'));
+      const conversation = JSON.parse(e.dataTransfer.getData("conversation"));
       handleUpdateConversation(conversation, {
-        key: 'folderId',
+        key: "folderId",
         value: folder.id,
       });
     }
@@ -48,7 +48,7 @@ export const ChatFolders = ({ searchTerm }: Props) => {
   return (
     <div className="flex w-full flex-col pt-2">
       {folders
-        .filter((folder) => folder.type === 'chat')
+        .filter((folder) => folder.type === "chat")
         .sort((a, b) => a.name.localeCompare(b.name))
         .map((folder, index) => (
           <Folder

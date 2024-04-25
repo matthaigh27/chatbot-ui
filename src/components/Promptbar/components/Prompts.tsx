@@ -1,8 +1,8 @@
-import { FC } from 'react';
+import { FC } from "react";
 
-import { Prompt } from '@/types/prompt';
+import { Prompt } from "@/types/prompt";
 
-import { PromptComponent } from './Prompt';
+import { PromptComponent } from "./Prompt";
 
 interface Props {
   prompts: Prompt[];

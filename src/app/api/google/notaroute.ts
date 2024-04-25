@@ -1,21 +1,21 @@
-import { OPENAI_API_HOST } from '@/utils/app/const';
-import { cleanSourceText } from '@/utils/server/google';
+import { NextRequest, NextResponse } from "next/server";
 
-import { Message } from '@/types/chat';
-import { GoogleBody, GoogleSource } from '@/types/google';
+import { OPENAI_API_HOST } from "@/utils/app/const";
+import { cleanSourceText } from "@/utils/server/google";
 
-import { Readability } from '@mozilla/readability';
-import endent from 'endent';
-import jsdom, { JSDOM } from 'jsdom';
-import { NextRequest, NextResponse } from 'next/server';
+import { Message } from "@/types/chat";
+import { GoogleBody, GoogleSource } from "@/types/google";
 
-export const runtime = 'edge';
+import { Readability } from "@mozilla/readability";
+import endent from "endent";
+import jsdom, { JSDOM } from "jsdom";
+
+export const runtime = "edge";
 
 // TODO: server action
 export async function POST(req: NextRequest) {
   try {
-    const { messages, key, model, googleAPIKey, googleCSEId } =
-      req.body as unknown as GoogleBody;
+    const { messages, key, model, googleAPIKey, googleCSEId } = req.body as unknown as GoogleBody;
 
     const userMessage = messages[messages.length - 1];
     const query = encodeURIComponent(userMessage.content.trim());
@@ -23,9 +23,7 @@ export async function POST(req: NextRequest) {
     const googleRes = await fetch(
       `https://customsearch.googleapis.com/customsearch/v1?key=${
         googleAPIKey ? googleAPIKey : process.env.GOOGLE_API_KEY
-      }&cx=${
-        googleCSEId ? googleCSEId : process.env.GOOGLE_CSE_ID
-      }&q=${query}&num=5`,
+      }&cx=${googleCSEId ? googleCSEId : process.env.GOOGLE_CSE_ID}&q=${query}&num=5`,
     );
 
     const googleData = await googleRes.json();
@@ -36,27 +34,24 @@ export async function POST(req: NextRequest) {
       displayLink: item.displayLink,
       snippet: item.snippet,
       image: item.pagemap?.cse_image?.[0]?.src,
-      text: '',
+      text: "",
     }));
 
     const sourcesWithText: any = await Promise.all(
       sources.map(async (source) => {
         try {
           const timeoutPromise = new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('Request timed out')), 5000),
+            setTimeout(() => reject(new Error("Request timed out")), 5000),
           );
 
-          const res = (await Promise.race([
-            fetch(source.link),
-            timeoutPromise,
-          ])) as any;
+          const res = (await Promise.race([fetch(source.link), timeoutPromise])) as any;
 
           // if (res) {
           const html = await res.text();
 
           const virtualConsole = new jsdom.VirtualConsole();
-          virtualConsole.on('error', (error) => {
-            if (!error.message.includes('Could not parse CSS stylesheet')) {
+          virtualConsole.on("error", (error) => {
+            if (!error.message.includes("Could not parse CSS stylesheet")) {
               console.error(error);
             }
           });
@@ -112,22 +107,22 @@ export async function POST(req: NextRequest) {
     Response:
     `;
 
-    const answerMessage: Message = { role: 'user', content: answerPrompt };
+    const answerMessage: Message = { role: "user", content: answerPrompt };
 
     const answerRes = await fetch(`${OPENAI_API_HOST}/v1/chat/completions`, {
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Authorization: `Bearer ${key ? key : process.env.OPENAI_API_KEY}`,
         ...(process.env.OPENAI_ORGANIZATION && {
-          'OpenAI-Organization': process.env.OPENAI_ORGANIZATION,
+          "OpenAI-Organization": process.env.OPENAI_ORGANIZATION,
         }),
       },
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify({
         model: model.id,
         messages: [
           {
-            role: 'system',
+            role: "system",
             content: `Use the sources to provide an accurate response. Respond in markdown format. Cite the sources you used as [1](link), etc, as you use them. Maximum 4 sentences.`,
           },
           answerMessage,
@@ -146,4 +141,4 @@ export async function POST(req: NextRequest) {
     console.error(error);
     return new Response("Error", { status: 500 });
   }
-};
+}

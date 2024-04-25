@@ -1,10 +1,10 @@
-import { Dispatch, createContext } from 'react';
+import { Dispatch, createContext } from "react";
 
-import { ActionType } from '@/hooks/useCreateReducer';
+import { ActionType } from "@/hooks/useCreateReducer";
 
-import { Prompt } from '@/types/prompt';
+import { Prompt } from "@/types/prompt";
 
-import { PromptbarInitialState } from './Promptbar.state';
+import { PromptbarInitialState } from "./Promptbar.state";
 
 export interface PromptbarContextProps {
   state: PromptbarInitialState;

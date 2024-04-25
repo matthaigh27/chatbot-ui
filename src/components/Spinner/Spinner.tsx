@@ -1,11 +1,11 @@
-import { FC } from 'react';
+import { FC } from "react";
 
 interface Props {
   size?: string;
   className?: string;
 }
 
-const Spinner = ({ size = '1em', className = '' }: Props) => {
+const Spinner = ({ size = "1em", className = "" }: Props) => {
   return (
     <svg
       stroke="currentColor"

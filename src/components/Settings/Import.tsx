@@ -1,18 +1,17 @@
-import { IconFileImport } from '@tabler/icons-react';
-import { FC } from 'react';
+import { IconFileImport } from "@tabler/icons-react";
+import { FC } from "react";
+import { useTranslation } from "react-i18next";
 
-import { useTranslation } from 'react-i18next';
+import { SupportedExportFormats } from "@/types/export";
 
-import { SupportedExportFormats } from '@/types/export';
-
-import { SidebarButton } from '../Sidebar/SidebarButton';
+import { SidebarButton } from "../Sidebar/SidebarButton";
 
 interface Props {
   onImport: (data: SupportedExportFormats) => void;
 }
 
 export const Import: FC<Props> = ({ onImport }) => {
-  const { t } = useTranslation('sidebar');
+  const { t } = useTranslation("sidebar");
   return (
     <>
       <input
@@ -35,12 +34,10 @@ export const Import: FC<Props> = ({ onImport }) => {
       />
 
       <SidebarButton
-        text={t('Import data')}
+        text={t("Import data")}
         icon={<IconFileImport size={18} />}
         onClick={() => {
-          const importFile = document.querySelector(
-            '#import-file',
-          ) as HTMLInputElement;
+          const importFile = document.querySelector("#import-file") as HTMLInputElement;
           if (importFile) {
             importFile.click();
           }

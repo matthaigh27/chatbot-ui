@@ -1,6 +1,6 @@
-import { useCallback } from 'react';
+import { useCallback } from "react";
 
-import { useFetch } from '@/hooks/useFetch';
+import { useFetch } from "@/hooks/useFetch";
 
 export interface GetModelsRequestProps {
   key: string;
@@ -30,7 +30,7 @@ const useApiService = () => {
       return fetchService.post<GetModelsRequestProps>(`/api/models`, {
         body: { key: params.key },
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         signal,
       });

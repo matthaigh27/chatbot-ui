@@ -1,27 +1,27 @@
-import { use, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { use, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
-import { useCreateReducer } from '@/hooks/useCreateReducer';
+import { useCreateReducer } from "@/hooks/useCreateReducer";
 
-import { savePrompts } from '@/utils/app/prompts';
+import { savePrompts } from "@/utils/app/prompts";
 
-import { OpenAIModels } from '@/types/openai';
-import { Prompt } from '@/types/prompt';
+import { OpenAIModels } from "@/types/openai";
+import { Prompt } from "@/types/prompt";
 
-import HomeContext from '@/app/api/home/home.context';
+import HomeContext from "@/app/api/home/home.context";
 
-import { PromptFolders } from './components/PromptFolders';
-import { PromptbarSettings } from './components/PromptbarSettings';
-import { Prompts } from './components/Prompts';
+import { PromptFolders } from "./components/PromptFolders";
+import { PromptbarSettings } from "./components/PromptbarSettings";
+import { Prompts } from "./components/Prompts";
 
-import Sidebar from '../Sidebar';
-import PromptbarContext from './PromptBar.context';
-import { PromptbarInitialState, initialState } from './Promptbar.state';
+import Sidebar from "../Sidebar";
+import PromptbarContext from "./PromptBar.context";
+import { PromptbarInitialState, initialState } from "./Promptbar.state";
 
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 const Promptbar = () => {
-  const { t } = useTranslation('promptbar');
+  const { t } = useTranslation("promptbar");
 
   const promptBarContextValue = useCreateReducer<PromptbarInitialState>({
     initialState,
@@ -39,8 +39,8 @@ const Promptbar = () => {
   } = promptBarContextValue;
 
   const handleTogglePromptbar = () => {
-    homeDispatch({ field: 'showPromptbar', value: !showPromptbar });
-    localStorage.setItem('showPromptbar', JSON.stringify(!showPromptbar));
+    homeDispatch({ field: "showPromptbar", value: !showPromptbar });
+    localStorage.setItem("showPromptbar", JSON.stringify(!showPromptbar));
   };
 
   const handleCreatePrompt = () => {
@@ -48,15 +48,15 @@ const Promptbar = () => {
       const newPrompt: Prompt = {
         id: uuidv4(),
         name: `Prompt ${prompts.length + 1}`,
-        description: '',
-        content: '',
+        description: "",
+        content: "",
         model: OpenAIModels[defaultModelId],
         folderId: null,
       };
 
       const updatedPrompts = [...prompts, newPrompt];
 
-      homeDispatch({ field: 'prompts', value: updatedPrompts });
+      homeDispatch({ field: "prompts", value: updatedPrompts });
 
       savePrompts(updatedPrompts);
     }
@@ -65,7 +65,7 @@ const Promptbar = () => {
   const handleDeletePrompt = (prompt: Prompt) => {
     const updatedPrompts = prompts.filter((p) => p.id !== prompt.id);
 
-    homeDispatch({ field: 'prompts', value: updatedPrompts });
+    homeDispatch({ field: "prompts", value: updatedPrompts });
     savePrompts(updatedPrompts);
   };
 
@@ -77,14 +77,14 @@ const Promptbar = () => {
 
       return p;
     });
-    homeDispatch({ field: 'prompts', value: updatedPrompts });
+    homeDispatch({ field: "prompts", value: updatedPrompts });
 
     savePrompts(updatedPrompts);
   };
 
   const handleDrop = (e: any) => {
     if (e.dataTransfer) {
-      const prompt = JSON.parse(e.dataTransfer.getData('prompt'));
+      const prompt = JSON.parse(e.dataTransfer.getData("prompt"));
 
       const updatedPrompt = {
         ...prompt,
@@ -93,26 +93,22 @@ const Promptbar = () => {
 
       handleUpdatePrompt(updatedPrompt);
 
-      e.target.style.background = 'none';
+      e.target.style.background = "none";
     }
   };
 
   useEffect(() => {
     if (searchTerm) {
       promptDispatch({
-        field: 'filteredPrompts',
+        field: "filteredPrompts",
         value: prompts.filter((prompt) => {
           const searchable =
-            prompt.name.toLowerCase() +
-            ' ' +
-            prompt.description.toLowerCase() +
-            ' ' +
-            prompt.content.toLowerCase();
+            prompt.name.toLowerCase() + " " + prompt.description.toLowerCase() + " " + prompt.content.toLowerCase();
           return searchable.includes(searchTerm.toLowerCase());
         }),
       });
     } else {
-      promptDispatch({ field: 'filteredPrompts', value: prompts });
+      promptDispatch({ field: "filteredPrompts", value: prompts });
     }
   }, [searchTerm, prompts]);
 
@@ -126,23 +122,17 @@ const Promptbar = () => {
       }}
     >
       <Sidebar<Prompt>
-        side={'right'}
+        side={"right"}
         isOpen={showPromptbar}
-        addItemButtonTitle={t('New prompt')}
-        itemComponent={
-          <Prompts
-            prompts={filteredPrompts.filter((prompt) => !prompt.folderId)}
-          />
-        }
+        addItemButtonTitle={t("New prompt")}
+        itemComponent={<Prompts prompts={filteredPrompts.filter((prompt) => !prompt.folderId)} />}
         folderComponent={<PromptFolders />}
         items={filteredPrompts}
         searchTerm={searchTerm}
-        handleSearchTerm={(searchTerm: string) =>
-          promptDispatch({ field: 'searchTerm', value: searchTerm })
-        }
+        handleSearchTerm={(searchTerm: string) => promptDispatch({ field: "searchTerm", value: searchTerm })}
         toggleOpen={handleTogglePromptbar}
         handleCreateItem={handleCreatePrompt}
-        handleCreateFolder={() => handleCreateFolder(t('New folder'), 'prompt')}
+        handleCreateFolder={() => handleCreateFolder(t("New folder"), "prompt")}
         handleDrop={handleDrop}
       />
     </PromptbarContext.Provider>
