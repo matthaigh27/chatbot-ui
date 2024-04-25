@@ -71,12 +71,10 @@ const Home = ({ serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId }
   );
 
   useEffect(() => {
-    console.log("first");
     if (data) dispatch({ field: "models", value: data });
   }, [data, dispatch]);
 
   useEffect(() => {
-    console.log("second");
     dispatch({ field: "modelError", value: getModelsError(error) });
   }, [dispatch, error, getModelsError]);
 
@@ -222,14 +220,12 @@ const Home = ({ serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId }
   // EFFECTS  --------------------------------------------
 
   useEffect(() => {
-    console.log("third");
     if (window.innerWidth < 640) {
       dispatch({ field: "showChatbar", value: false });
     }
   }, [dispatch, selectedConversation]);
 
   useEffect(() => {
-    console.log("fourth");
     defaultModelId && dispatch({ field: "defaultModelId", value: defaultModelId });
     serverSideApiKeyIsSet &&
       dispatch({
@@ -246,7 +242,6 @@ const Home = ({ serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId }
   // ON LOAD --------------------------------------------
 
   useEffect(() => {
-    console.log("fifth");
     const settings = getSettings();
     if (settings.theme) {
       dispatch({
