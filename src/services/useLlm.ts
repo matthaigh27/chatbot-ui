@@ -16,6 +16,7 @@ export default function useLLM({ apiKey }: { apiKey: string }) {
   const call = useCallback(
     async ({ model, messages, prompt, temperature }: ChatBody) => {
       try {
+        // TODO: actually use or remove this
         const encoding = getEncoding(getEncodingNameForModel(model.id as TiktokenModel));
 
         const promptToSend = prompt ?? DEFAULT_SYSTEM_PROMPT;

@@ -2,8 +2,6 @@ import { OpenAIModelID, fallbackModelID } from "@/types/openai";
 
 import Home from "@/app/api/home/home";
 
-export const runtime = "edge";
-
 export default async function Index() {
   // There used to be { locale }
 
@@ -13,14 +11,9 @@ export default async function Index() {
       process.env.DEFAULT_MODEL) ||
     fallbackModelID;
 
-  let serverSidePluginKeysSet = false;
-
   const googleApiKey = process.env.GOOGLE_API_KEY;
   const googleCSEId = process.env.GOOGLE_CSE_ID;
-
-  if (googleApiKey && googleCSEId) {
-    serverSidePluginKeysSet = true;
-  }
+  const serverSidePluginKeysSet = !!googleApiKey && !!googleCSEId;
 
   return (
     <Home

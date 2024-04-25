@@ -191,31 +191,31 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
           saveConversations(updatedConversations);
           homeDispatch({ field: "messageIsStreaming", value: false });
         } else {
-          // i have no idea what this is doing
-          const { answer } = await response.json();
-          const updatedMessages: Message[] = [...updatedConversation.messages, { role: "assistant", content: answer }];
-          updatedConversation = {
-            ...updatedConversation,
-            messages: updatedMessages,
-          };
-          homeDispatch({
-            field: "selectedConversation",
-            value: updateConversation,
-          });
-          saveConversation(updatedConversation);
-          const updatedConversations: Conversation[] = conversations.map((conversation) => {
-            if (conversation.id === selectedConversation.id) {
-              return updatedConversation;
-            }
-            return conversation;
-          });
-          if (updatedConversations.length === 0) {
-            updatedConversations.push(updatedConversation);
-          }
-          homeDispatch({ field: "conversations", value: updatedConversations });
-          saveConversations(updatedConversations);
-          homeDispatch({ field: "loading", value: false });
-          homeDispatch({ field: "messageIsStreaming", value: false });
+          // // i have no idea what this is doing
+          // const { answer } = await response.json();
+          // const updatedMessages: Message[] = [...updatedConversation.messages, { role: "assistant", content: answer }];
+          // updatedConversation = {
+          //   ...updatedConversation,
+          //   messages: updatedMessages,
+          // };
+          // homeDispatch({
+          //   field: "selectedConversation",
+          //   value: updateConversation,
+          // });
+          // saveConversation(updatedConversation);
+          // const updatedConversations: Conversation[] = conversations.map((conversation) => {
+          //   if (conversation.id === selectedConversation.id) {
+          //     return updatedConversation;
+          //   }
+          //   return conversation;
+          // });
+          // if (updatedConversations.length === 0) {
+          //   updatedConversations.push(updatedConversation);
+          // }
+          // homeDispatch({ field: "conversations", value: updatedConversations });
+          // saveConversations(updatedConversations);
+          // homeDispatch({ field: "loading", value: false });
+          // homeDispatch({ field: "messageIsStreaming", value: false });
         }
       }
     },
