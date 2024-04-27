@@ -12,6 +12,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Chatbot UI",
   description: "ChatGPT but better.",
+  manifest: "/manifest.json",
 };
 
 export const viewport: Viewport = {
