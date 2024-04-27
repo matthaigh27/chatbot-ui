@@ -1,7 +1,7 @@
 {
   "name": "Chatbot UI",
   "start_url": "https://chatbot-ui-steel-nu.vercel.app/",
-  "theme_color": "#444654",
+  "theme_color": "#202123",
   "background_color": "#444654",
   "orientation": "portrait",
   "display": "standalone",
