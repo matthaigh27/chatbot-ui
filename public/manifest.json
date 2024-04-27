@@ -1,0 +1,16 @@
+{
+  "name": "Chatbot UI",
+  "start_url": "https://chatbot-ui-steel-nu.vercel.app/",
+  "theme_color": "#444654",
+  "background_color": "#444654",
+  "orientation": "portrait",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "/apple-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
