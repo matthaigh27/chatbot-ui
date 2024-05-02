@@ -29,6 +29,7 @@ import Promptbar from "@/components/Promptbar";
 import HomeContext from "./home.context";
 import { HomeInitialState, initialState } from "./home.state";
 
+import { useMediaQuery } from "usehooks-ts";
 import { v4 as uuidv4 } from "uuid";
 
 interface Props {
@@ -41,6 +42,7 @@ const Home = ({ serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId }
   const { t } = useTranslation("chat");
   const { getModels } = useApiService();
   const { getModelsError } = useErrorService();
+  const isSm = useMediaQuery("(max-width: 640px)");
 
   const contextValue = useCreateReducer<HomeInitialState>({
     initialState,
@@ -356,28 +358,22 @@ const Home = ({ serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId }
             </div>
 
             <div
-              className={`${showChatbar ? "blur-sm sm:blur-none md:ml-[260px]" : ""} ${showPromptbar ? "blur-sm sm:blur-none md:mr-[260px]" : ""} transition-[margin]`}
-            >
-              <div
-                className="sm:hidden"
-                onClick={
-                  showChatbar || showPromptbar
-                    ? () => {
-                        if (showChatbar) {
-                          dispatch({ field: "showChatbar", value: false });
-                        }
-
-                        if (showPromptbar) {
-                          dispatch({ field: "showPromptbar", value: false });
-                        }
+              className={`${showChatbar ? "pointer-events none blur-sm sm:blur-none md:ml-[260px]" : ""} ${showPromptbar ? "pointer-events-none blur-sm sm:blur-none md:mr-[260px]" : ""} transition-[margin] h-full`}
+              onClick={
+                (showChatbar || showPromptbar) && isSm
+                  ? () => {
+                      if (showChatbar) {
+                        dispatch({ field: "showChatbar", value: false });
                       }
-                    : undefined
-                }
-              >
-                <div className={showChatbar || showPromptbar ? "pointer-events-none" : ""}>
-                  <Chat stopConversationRef={stopConversationRef} />
-                </div>
-              </div>
+
+                      if (showPromptbar) {
+                        dispatch({ field: "showPromptbar", value: false });
+                      }
+                    }
+                  : undefined
+              }
+            >
+              <Chat stopConversationRef={stopConversationRef} />
             </div>
 
             <div className={showChatbar ? "hidden sm:block" : ""}>
