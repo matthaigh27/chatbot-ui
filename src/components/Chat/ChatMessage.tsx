@@ -124,7 +124,7 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit }) =
           {message.role === "assistant" ? <IconRobot size={30} /> : <IconUser size={30} />}
         </div>
 
-        <div className="prose mt-[-2px] w-full dark:prose-invert">
+        <div className="prose mt-[-2px] w-full dark:prose-invert max-w-[calc(100%-60px)]">
           {message.role === "user" ? (
             <div className="flex w-full">
               {isEditing ? (
@@ -190,34 +190,10 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit }) =
           ) : (
             <div className="flex flex-row">
               <MemoizedReactMarkdown
-                className="prose dark:prose-invert flex-1"
+                className="prose dark:prose-invert flex-1 max-w-full"
                 remarkPlugins={[remarkGfm, remarkMath]}
                 rehypePlugins={[rehypeKatex]}
                 components={{
-                  // code({ node, inline, className, children, ...props }) {
-                  //   if (children.length) {
-                  //     if (children[0] == '▍') {
-                  //       return <span className="animate-pulse cursor-default mt-1">▍</span>
-                  //     }
-
-                  //     children[0] = (children[0] as string).replace("`▍`", "▍")
-                  //   }
-
-                  //   const match = /language-(\w+)/.exec(className || '');
-
-                  //   return !inline ? (
-                  //     <CodeBlock
-                  //       key={Math.random()}
-                  //       language={(match && match[1]) || ''}
-                  //       value={String(children).replace(/\n$/, '')}
-                  //       {...props}
-                  //     />
-                  //   ) : (
-                  //     <code className={className} {...props}>
-                  //       {children}
-                  //     </code>
-                  //   );
-                  // },
                   pre({ node, children, ...props }) {
                     return <CodeBlock {...props}>{children}</CodeBlock>;
                   },

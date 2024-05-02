@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
 
@@ -24,7 +24,6 @@ import { Prompt } from "@/types/prompt";
 
 import { Chat } from "@/components/Chat/Chat";
 import { Chatbar } from "@/components/Chatbar/Chatbar";
-import { Navbar } from "@/components/Mobile/Navbar";
 import Promptbar from "@/components/Promptbar";
 
 import HomeContext from "./home.context";
@@ -42,20 +41,19 @@ const Home = ({ serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId }
   const { t } = useTranslation("chat");
   const { getModels } = useApiService();
   const { getModelsError } = useErrorService();
-  const [initialRender, setInitialRender] = useState<boolean>(true);
 
   const contextValue = useCreateReducer<HomeInitialState>({
     initialState,
   });
 
   const {
-    state: { apiKey, lightMode, folders, conversations, selectedConversation, prompts, temperature },
+    state: { apiKey, lightMode, showChatbar, showPromptbar, folders, conversations, selectedConversation, prompts },
     dispatch,
   } = contextValue;
 
   const stopConversationRef = useRef<boolean>(false);
 
-  const { data, error, refetch } = useQuery(
+  const { data, error } = useQuery(
     ["GetModels", apiKey, serverSideApiKeyIsSet],
     ({ signal }) => {
       if (!apiKey && !serverSideApiKeyIsSet) return null;
@@ -352,18 +350,39 @@ const Home = ({ serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId }
     <HomeContext.Provider value={context}>
       {selectedConversation && (
         <main className={`flex h-screen w-screen flex-col text-sm text-white dark:text-white ${lightMode}`}>
-          <div className="fixed top-0 w-full sm:hidden">
-            <Navbar selectedConversation={selectedConversation} onNewConversation={handleNewConversation} />
-          </div>
-
-          <div className="flex h-full w-full pt-[48px] sm:pt-0">
-            <Chatbar />
-
-            <div className="flex flex-1">
-              <Chat stopConversationRef={stopConversationRef} />
+          <div className="h-full w-full pt-0">
+            <div className={showPromptbar ? "hidden sm:block" : ""}>
+              <Chatbar />
             </div>
 
-            <Promptbar />
+            <div
+              className={`${showChatbar ? "blur-sm sm:blur-none md:ml-[260px]" : ""} ${showPromptbar ? "blur-sm sm:blur-none md:mr-[260px]" : ""} transition-[margin]`}
+            >
+              <div
+                className="sm:hidden"
+                onClick={
+                  showChatbar || showPromptbar
+                    ? () => {
+                        if (showChatbar) {
+                          dispatch({ field: "showChatbar", value: false });
+                        }
+
+                        if (showPromptbar) {
+                          dispatch({ field: "showPromptbar", value: false });
+                        }
+                      }
+                    : undefined
+                }
+              >
+                <div className={showChatbar || showPromptbar ? "pointer-events-none" : ""}>
+                  <Chat stopConversationRef={stopConversationRef} />
+                </div>
+              </div>
+            </div>
+
+            <div className={showChatbar ? "hidden sm:block" : ""}>
+              <Promptbar />
+            </div>
           </div>
         </main>
       )}

@@ -72,9 +72,9 @@ export const CodeBlock = memo(({ children }: { children: React.ReactNode }) => {
     URL.revokeObjectURL(url);
   };
   return (
-    <div className="codeblock relative font-sans text-[16px]">
+    <div className="codeblock relative font-sans text-[16px] rounded-md bg-[#202123]">
       <div className="flex items-center justify-between py-1.5 px-4">
-        <span className="text-xs lowercase text-white">{language}</span>
+        <span className="text-xs lowercase text-white">{match ? match[1] : language}</span>
 
         <div className="flex items-center">
           <button
@@ -90,7 +90,7 @@ export const CodeBlock = memo(({ children }: { children: React.ReactNode }) => {
         </div>
       </div>
 
-      <SyntaxHighlighter language={language} style={oneDark} customStyle={{ margin: 0 }}>
+      <SyntaxHighlighter language={match ? match[1] : language} style={oneDark} customStyle={{ margin: 0 }}>
         {value}
       </SyntaxHighlighter>
     </div>

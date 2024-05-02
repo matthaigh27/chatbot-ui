@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import useLLM from "@/services/useLlm";
 
 import { getEndpoint } from "@/utils/app/api";
-import { saveConversation, saveConversations, updateConversation } from "@/utils/app/conversation";
+import { saveConversation, saveConversations } from "@/utils/app/conversation";
 import { throttle } from "@/utils/data/throttle";
 
 import { ChatBody, Conversation, Message } from "@/types/chat";
@@ -38,7 +38,6 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
       apiKey,
       pluginKeys,
       serverSideApiKeyIsSet,
-      messageIsStreaming,
       modelError,
       loading,
       prompts,
@@ -340,7 +339,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
         <ErrorMessageDiv error={modelError} />
       ) : (
         <>
-          <div className="max-h-full overflow-x-hidden" ref={chatContainerRef} onScroll={handleScroll}>
+          <div className="max-h-[calc(100dvh)] overflow-x-hidden" ref={chatContainerRef} onScroll={handleScroll}>
             {selectedConversation?.messages.length === 0 ? (
               <>
                 <div className="mx-auto flex flex-col space-y-5 md:space-y-10 px-3 pt-5 md:pt-12 sm:max-w-[600px]">
