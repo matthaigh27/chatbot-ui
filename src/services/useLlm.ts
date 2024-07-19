@@ -16,30 +16,30 @@ export default function useLLM({ apiKey }: { apiKey: string }) {
   const call = useCallback(
     async ({ model, messages, prompt, temperature }: ChatBody) => {
       try {
-        // TODO: actually use or remove this
-        const encoding = getEncoding(getEncodingNameForModel(model.id as TiktokenModel));
-
         const promptToSend = prompt ?? DEFAULT_SYSTEM_PROMPT;
         const temperatureToUse = temperature ?? DEFAULT_TEMPERATURE;
-        const prompt_tokens = encoding.encode(promptToSend);
 
-        let tokenCount = prompt_tokens.length;
-        let messagesToSend: Message[] = [];
+        // // TODO: actually use or remove this
+        // const encoding = getEncoding(getEncodingNameForModel(model.id as TiktokenModel));
+        // const prompt_tokens = encoding.encode(promptToSend);
 
-        for (let i = messages.length - 1; i >= 0; i--) {
-          const message = messages[i];
-          const tokens = encoding.encode(message.content);
+        // let tokenCount = prompt_tokens.length;
+        // let messagesToSend: Message[] = [];
 
-          if (tokenCount + tokens.length + 1000 > model.tokenLimit) {
-            break;
-          }
-          tokenCount += tokens.length;
-          messagesToSend = [message, ...messagesToSend];
-        }
+        // for (let i = messages.length - 1; i >= 0; i--) {
+        //   const message = messages[i];
+        //   const tokens = encoding.encode(message.content);
+
+        //   if (tokenCount + tokens.length + 1000 > model.tokenLimit) {
+        //     break;
+        //   }
+        //   tokenCount += tokens.length;
+        //   messagesToSend = [message, ...messagesToSend];
+        // }
 
         const response = await openai.chat.completions.create({
           model: model.id,
-          messages: [{ role: "system", content: promptToSend }, ...messagesToSend],
+          messages: [{ role: "system", content: promptToSend }, ...messages],
           temperature: temperatureToUse,
           stream: true,
         });
