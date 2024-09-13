@@ -4,7 +4,6 @@ import { DEFAULT_SYSTEM_PROMPT, DEFAULT_TEMPERATURE } from "@/utils/app/const";
 
 import { ChatBody, Message } from "@/types/chat";
 
-import { type TiktokenModel, getEncoding, getEncodingNameForModel } from "js-tiktoken";
 import { OpenAI } from "openai";
 
 const decoder = new TextDecoder();

@@ -11,7 +11,7 @@ import HomeContext from "@/app/api/home/home.context";
 import { CodeBlock } from "../Markdown/CodeBlock";
 import { MemoizedReactMarkdown } from "../Markdown/MemoizedReactMarkdown";
 
-import "katex/dist/katex.min.css";
+// import "katex/dist/katex.min.css";
 import rehypeKatex from "rehype-katex";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
