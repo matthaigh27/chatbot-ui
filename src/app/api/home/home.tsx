@@ -2,12 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { useQuery } from "react-query";
 
 import { useCreateReducer } from "@/hooks/useCreateReducer";
-
-import useErrorService from "@/services/errorService";
-import useApiService from "@/services/useApiService";
 
 import { cleanConversationHistory, cleanSelectedConversation } from "@/utils/app/clean";
 import { DEFAULT_SYSTEM_PROMPT, DEFAULT_TEMPERATURE } from "@/utils/app/const";
@@ -40,8 +36,6 @@ interface Props {
 
 const Home = ({ serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId }: Props) => {
   const { t } = useTranslation("chat");
-  const { getModels } = useApiService();
-  const { getModelsError } = useErrorService();
   const isSm = useMediaQuery("(max-width: 640px)");
 
   const contextValue = useCreateReducer<HomeInitialState>({
@@ -49,38 +43,11 @@ const Home = ({ serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId }
   });
 
   const {
-    state: { apiKey, lightMode, showChatbar, showPromptbar, folders, conversations, selectedConversation, prompts },
+    state: { lightMode, showChatbar, showPromptbar, folders, conversations, selectedConversation, prompts },
     dispatch,
   } = contextValue;
 
   const stopConversationRef = useRef<boolean>(false);
-
-  const { data, error } = useQuery(
-    ["GetModels", apiKey, serverSideApiKeyIsSet],
-    ({ signal }) => {
-      if (!apiKey && !serverSideApiKeyIsSet) return null;
-
-      return getModels(
-        {
-          key: apiKey,
-        },
-        signal,
-      );
-    },
-    { enabled: true, refetchOnMount: false },
-  );
-
-  useEffect(() => {
-    if (data) dispatch({ field: "models", value: data });
-  }, [data, dispatch]);
-
-  useEffect(() => {
-    dispatch({ field: "modelError", value: getModelsError(error) });
-  }, [dispatch, error, getModelsError]);
-
-  useEffect(() => {
-    console.log("getModelsError");
-  }, [getModelsError]);
 
   // FETCH MODELS ----------------------------------------------
 

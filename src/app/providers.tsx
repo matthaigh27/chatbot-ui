@@ -1,20 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { useEffect } from "react";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
-  const [queryClient] = useState(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          queries: {
-            // Needs to be > 0 to avoid re-fetching on initial load
-            staleTime: 60,
-          },
-        },
-      }),
-  );
 
   useEffect(() => {
     const registerServiceWorker = () => {
@@ -29,5 +17,5 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
+  return children;
 }
