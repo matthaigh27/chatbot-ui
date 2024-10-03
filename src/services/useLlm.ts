@@ -18,7 +18,7 @@ export default function useLLM({ apiKey }: { apiKey: string }) {
       messages,
       prompt,
       temperature,
-    }: ChatBody): Promise<[false, string] | [true, { ok: boolean; body: ReadableStream<any> }]> => {
+    }: ChatBody): Promise<[false, string] | [true, { ok: true; body: ReadableStream<any> }] | [true, { ok: false; statusText: string }]> => {
       try {
         const promptToSend = prompt ?? DEFAULT_SYSTEM_PROMPT;
         const temperatureToUse = temperature ?? DEFAULT_TEMPERATURE;
