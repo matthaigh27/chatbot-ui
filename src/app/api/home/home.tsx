@@ -325,7 +325,7 @@ const Home = ({ serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId }
             </div>
 
             <div
-              className={`${showChatbar ? "pointer-events none blur-sm sm:blur-none md:ml-[260px]" : ""} ${showPromptbar ? "pointer-events-none blur-sm sm:blur-none md:mr-[260px]" : ""} transition-[margin] h-full`}
+              className={`${showChatbar || showPromptbar ? "pointer-events none blur-sm sm:blur-none" : ""} ${showChatbar ? "md:ml-[260px]" : "" } ${showPromptbar ? "md:mr-[260px]" : ""} transition-[margin] h-full`}
               onClick={
                 (showChatbar || showPromptbar) && isSm
                   ? () => {

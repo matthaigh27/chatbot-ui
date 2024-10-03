@@ -1,4 +1,4 @@
-import { FC, KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
+import { FC, KeyboardEvent, use, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { DEFAULT_SYSTEM_PROMPT } from "@/utils/app/const";
@@ -8,6 +8,7 @@ import { Prompt } from "@/types/prompt";
 
 import { PromptList } from "./PromptList";
 import { VariableModal } from "./VariableModal";
+import HomeContext from "@/app/api/home/home.context";
 
 interface Props {
   conversation: Conversation;
@@ -27,6 +28,10 @@ export const SystemPrompt: FC<Props> = ({ conversation, prompts, onChangePrompt 
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const promptListRef = useRef<HTMLUListElement | null>(null);
+
+  const {
+    state: { selectedConversation },
+  } = use(HomeContext);
 
   const filteredPrompts = prompts.filter((prompt) =>
     prompt.name.toLowerCase().includes(promptInputValue.toLowerCase()),
@@ -141,12 +146,12 @@ export const SystemPrompt: FC<Props> = ({ conversation, prompts, onChangePrompt 
     }
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (textareaRef && textareaRef.current) {
       textareaRef.current.style.height = "inherit";
       textareaRef.current.style.height = `${textareaRef.current?.scrollHeight}px`;
     }
-  }, [value]);
+  }, [value, selectedConversation?.model]);
 
   useEffect(() => {
     if (conversation.prompt) {
@@ -169,6 +174,10 @@ export const SystemPrompt: FC<Props> = ({ conversation, prompts, onChangePrompt 
       window.removeEventListener("click", handleOutsideClick);
     };
   }, []);
+
+  if (selectedConversation?.model.supportsSystemPrompt === false) {
+    return null;
+  }
 
   return (
     <div className="flex flex-col">

@@ -104,7 +104,26 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
           });
         }
         const controller = new AbortController();
-        const response = await call(chatBody);
+        const [streaming, response]= await call(chatBody);
+
+        if (!streaming) {
+          const updatedMessages: Message[] = [
+            ...updatedConversation.messages,
+            { role: "assistant", content: response },
+          ];
+          updatedConversation = {
+            ...updatedConversation,
+            messages: updatedMessages,
+          };
+          homeDispatch({
+            field: "selectedConversation",
+            value: updatedConversation,
+          });
+          homeDispatch({ field: "loading", value: false });
+          homeDispatch({ field: "messageIsStreaming", value: false });
+          return;
+        }
+
         if (!response.ok) {
           homeDispatch({ field: "loading", value: false });
           homeDispatch({ field: "messageIsStreaming", value: false });

@@ -13,28 +13,26 @@ export default function useLLM({ apiKey }: { apiKey: string }) {
   const openai = useMemo(() => new OpenAI({ apiKey, dangerouslyAllowBrowser: true }), [apiKey]);
 
   const call = useCallback(
-    async ({ model, messages, prompt, temperature }: ChatBody) => {
+    async ({
+      model,
+      messages,
+      prompt,
+      temperature,
+    }: ChatBody): Promise<[false, string] | [true, { ok: boolean; body: ReadableStream<any> }]> => {
       try {
         const promptToSend = prompt ?? DEFAULT_SYSTEM_PROMPT;
         const temperatureToUse = temperature ?? DEFAULT_TEMPERATURE;
+        const canStream = model.supportsStreaming ?? true;
 
-        // // TODO: actually use or remove this
-        // const encoding = getEncoding(getEncodingNameForModel(model.id as TiktokenModel));
-        // const prompt_tokens = encoding.encode(promptToSend);
-
-        // let tokenCount = prompt_tokens.length;
-        // let messagesToSend: Message[] = [];
-
-        // for (let i = messages.length - 1; i >= 0; i--) {
-        //   const message = messages[i];
-        //   const tokens = encoding.encode(message.content);
-
-        //   if (tokenCount + tokens.length + 1000 > model.tokenLimit) {
-        //     break;
-        //   }
-        //   tokenCount += tokens.length;
-        //   messagesToSend = [message, ...messagesToSend];
-        // }
+        if (!canStream) {
+          const response = await openai.chat.completions.create({
+            model: model.id,
+            messages: model.supportsSystemPrompt ? [{ role: "system", content: promptToSend }, ...messages] : messages,
+            temperature: temperatureToUse,
+            stream: false,
+          });
+          return [canStream, response.choices[0].message.content as string];
+        }
 
         const response = await openai.chat.completions.create({
           model: model.id,
@@ -57,10 +55,10 @@ export default function useLLM({ apiKey }: { apiKey: string }) {
 
         const contentStream = stream.pipeThrough(transformer);
 
-        return { ok: true, body: contentStream };
+        return [canStream, { ok: true, body: contentStream }];
       } catch (error: any) {
         console.error(error);
-        return { ok: false, statusText: error.message };
+        return [true, { ok: false, statusText: error.message }];
       }
     },
     [openai],
