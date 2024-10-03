@@ -5,6 +5,7 @@ export interface OpenAIModel {
   tokenLimit: number;
   supportsStreaming?: boolean;
   supportsSystemPrompt?: boolean;
+  supportsTemperature?: boolean;
 }
 
 export enum OpenAIModelID {
@@ -44,6 +45,7 @@ export const OpenAIModels: Record<OpenAIModelID, OpenAIModel> = {
     tokenLimit: 128000,
     supportsStreaming: false,
     supportsSystemPrompt: false,
+    supportsTemperature: false,
   },
   [OpenAIModelID.O1_PREVIEW]: {
     id: OpenAIModelID.O1_PREVIEW,
@@ -52,5 +54,6 @@ export const OpenAIModels: Record<OpenAIModelID, OpenAIModel> = {
     tokenLimit: 128000,
     supportsStreaming: false,
     supportsSystemPrompt: false,
+    supportsTemperature: false,
   },
 };

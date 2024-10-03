@@ -28,8 +28,7 @@ export default function useLLM({ apiKey }: { apiKey: string }) {
           const response = await openai.chat.completions.create({
             model: model.id,
             messages: model.supportsSystemPrompt ? [{ role: "system", content: promptToSend }, ...messages] : messages,
-            temperature: temperatureToUse,
-            stream: false,
+            temperature: model.supportsTemperature ? temperatureToUse : undefined,
           });
           return [canStream, response.choices[0].message.content as string];
         }

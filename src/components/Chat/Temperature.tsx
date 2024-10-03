@@ -12,7 +12,7 @@ interface Props {
 
 export const TemperatureSlider: FC<Props> = ({ label, onChangeTemperature }) => {
   const {
-    state: { conversations },
+    state: { conversations, selectedConversation },
   } = use(HomeContext);
   const lastConversation = conversations[conversations.length - 1];
   const [temperature, setTemperature] = useState(lastConversation?.temperature ?? DEFAULT_TEMPERATURE);
@@ -22,6 +22,10 @@ export const TemperatureSlider: FC<Props> = ({ label, onChangeTemperature }) => 
     setTemperature(newValue);
     onChangeTemperature(newValue);
   };
+
+  if (selectedConversation?.model.supportsTemperature === false) {
+    return null;
+  }
 
   return (
     <div className="flex flex-col">
