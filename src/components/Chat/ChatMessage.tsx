@@ -11,7 +11,7 @@ import HomeContext from "@/app/api/home/home.context";
 import { CodeBlock } from "../Markdown/CodeBlock";
 import { MemoizedReactMarkdown } from "../Markdown/MemoizedReactMarkdown";
 
-// import "katex/dist/katex.min.css";
+import "katex/dist/katex.min.css";
 import rehypeKatex from "rehype-katex";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
@@ -109,6 +109,13 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit }) =
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
   }, [isEditing]);
+
+  function cleanContent(message: string) {
+    console.log(message);
+    const a = message.replaceAll("\\[", "$$").replaceAll("\\]", "$$").replaceAll("\\(", "$").replaceAll("\\)", "$");
+    console.log(a);
+    return a;
+  }
 
   return (
     <div
@@ -216,7 +223,7 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit }) =
                   },
                 }}
               >
-                {`${message.content}${
+                {`${cleanContent(message.content)}${
                   messageIsStreaming && messageIndex == (selectedConversation?.messages.length ?? 0) - 1 ? "`▍`" : ""
                 }`}
               </MemoizedReactMarkdown>
