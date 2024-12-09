@@ -18,24 +18,29 @@ export default function useLLM({ apiKey }: { apiKey: string }) {
       messages,
       prompt,
       temperature,
-    }: ChatBody): Promise<[false, string] | [true, { ok: true; body: ReadableStream<any> }] | [true, { ok: false; statusText: string }]> => {
+    }: ChatBody): Promise<
+      [false, string] | [true, { ok: true; body: ReadableStream<any> }] | [true, { ok: false; statusText: string }]
+    > => {
       try {
         const promptToSend = prompt ?? DEFAULT_SYSTEM_PROMPT;
-        const temperatureToUse = temperature ?? DEFAULT_TEMPERATURE;
+        const temperatureToUse = model.supportsTemperature ? (temperature ?? DEFAULT_TEMPERATURE) : undefined;
         const canStream = model.supportsStreaming ?? true;
+        const messagesToSend = (
+          model.supportsSystemPrompt ? [{ role: "system", content: promptToSend }, ...messages] : messages
+        ) as Message[];
 
         if (!canStream) {
           const response = await openai.chat.completions.create({
             model: model.id,
-            messages: model.supportsSystemPrompt ? [{ role: "system", content: promptToSend }, ...messages] : messages,
-            temperature: model.supportsTemperature ? temperatureToUse : undefined,
+            messages: messagesToSend,
+            temperature: temperatureToUse,
           });
           return [canStream, response.choices[0].message.content as string];
         }
 
         const response = await openai.chat.completions.create({
           model: model.id,
-          messages: [{ role: "system", content: promptToSend }, ...messages],
+          messages: messagesToSend,
           temperature: temperatureToUse,
           stream: true,
         });

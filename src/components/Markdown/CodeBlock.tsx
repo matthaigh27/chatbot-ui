@@ -18,7 +18,7 @@ function extractText(children: React.ReactNode): string {
   }
 
   if (isValidElement(children)) {
-    return extractText(children.props.children);
+    return extractText((children as any).props.children);
   }
 
   if (Array.isArray(children)) {
@@ -33,7 +33,7 @@ export const CodeBlock = memo(({ children }: { children: React.ReactNode }) => {
   const { t } = useTranslation("markdown");
   const [isCopied, setIsCopied] = useState<Boolean>(false);
   const child = Children.only(children);
-  const language = isValidElement(child) ? child.props.className : "";
+  const language = isValidElement(child) ? (child as any).props.className : "";
   const match = /language-(\w+)/.exec(language);
   const value = extractText(children);
 

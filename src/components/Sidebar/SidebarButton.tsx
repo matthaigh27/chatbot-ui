@@ -2,7 +2,7 @@ import { FC } from "react";
 
 interface Props {
   text: string;
-  icon: JSX.Element;
+  icon: React.ReactNode;
   onClick: () => void;
 }
 
